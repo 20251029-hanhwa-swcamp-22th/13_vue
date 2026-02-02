@@ -15,4 +15,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server:{
+    // 서버 프록시 설정
+    proxy:{
+      '/api':{
+        target : 'http://localhost:3000/',
+        changeOrigin : true,
+        rewrite:(path) => path.replace(/^\/api/,'')
+      }
+    }
+  }
 })
