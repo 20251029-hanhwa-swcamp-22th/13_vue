@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>watch effect</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <pre>
+    * watchEffect
+      - 별도로 감시할 반응형 변수를 지정하지 않고
+        모든 반응형 변수를 감지하는 함수
+  </pre>
+  
+  <div id="app">
+    <h1>{{ num }}</h1> 
+
+    <input type="number" v-model="input">
+    <button @click="num = num - input">-{{ input }}</button> 
+    <button @click="num = 0">초기화</button>
+    <button @click="num = num + input">+{{ input }}</button>
+  </div>
+  
+  <script>
+    const {createApp, ref, watchEffect} = Vue;
+    
+    createApp({
+      setup(){
+        const num = ref(0);
+        const input = ref(1);
+        
+        watchEffect(() => {
+          console.log('num : ', num.value);
+          console.log('input : ', input.value);
+        });
+        
+        return {num, input}
+      }
+    }).mount('#app');
+    
+  </script>
+  
+</body>
+</html>
