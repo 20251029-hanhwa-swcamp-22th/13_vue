@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>03_watch-effect</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <pre>
+    * watchEffect
+      - 별도로 감시할 반응형 변수를 지정하지 않고
+        모든 반응형 변수를 감지하는 함수
+  </pre>
+
+  <div id="app">
+    <h1>{{ num }}</h1>
+
+    <input type="number" min ="1" max ="10" v-model="diffNum">
+    <br>
+
+    <button @click="num -= diffNum"> -{{diffNum}}</button>
+    <button @click="num = 0"> 초기화</button>
+    <button @click="num += diffNum"> +{{diffNum}} </button>
+  </div>
+  <script>
+    const {createApp, ref, watchEffect} = Vue;
+
+    createApp({
+        name : "watchEffect test app",
+        setup(){
+            const num = ref(0);
+            const diffNum = ref(1);
+
+            watchEffect(()=>{
+                console.log("num : ", num.value);
+            });
+
+            return {num, diffNum};
+        }
+        }
+    ).mount("#app");
+
+  </script>
+
+</body>
+</html>
