@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>composition spi</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <h3>Options API</h3>
+  <div id="step1">
+    <p>{{ state1.message }}</p>
+    <p>{{ count1 }}</p>
+    <button @click="increment1">count +1</button>
+  </div>
+
+  <hr>
+
+  <h3>Composition API</h3>
+  <div id="step2">
+    <p>{{ state2.message }}</p>
+    <p>{{ count2 }}</p>
+    <button @click="increment2">count +1</button>
+  </div>
+
+  <script>
+      const {createApp, ref, reactive, onMounted} = Vue;
+
+      // options api
+      createApp({
+          // 상태 정의 (data 함수 사용)
+          data() {
+              return {
+                  count1: 0, // ref
+                  state1: {
+                      message: 'Options API' // 메시지도 변경해 보았습니다.
+                  }
+              };
+          },
+
+          // 메서드 정의 (함수들을 methods 객체 안에 정의)
+          methods: {
+              increment1() {
+                  this.count1++;
+              }
+          },
+
+          // 생명주기 훅 (mounted 옵션 사용)
+          mounted() {
+              console.log('컴포넌트가 마운트됨');
+          }
+      }).mount('#step1');
+
+
+
+      // composition api
+      createApp({
+          setup() {
+              // 상태 정의 (data 함수 대신 ref, reactive 사용)
+              const count2 = ref(0);
+              const state2 = reactive({message: 'Composition API'});
+
+              // 메서드 정의 (함수들을 methods 객체 안에 정의 대신 setup 함수 내부에서 정의)
+              const increment2 = () => count2.value++;
+
+              // 생명주기 훅 (onMounted 사용)
+              onMounted(() => {
+                  console.log('컴포넌트가 마운트됨');
+              });
+
+              // 템플릿에서 사용할 항목들 반환
+              return {
+                  count2,
+                  state2,
+                  increment2
+              };
+          }
+      }).mount('#step2');
+
+  </script>
+</body>
+</html>

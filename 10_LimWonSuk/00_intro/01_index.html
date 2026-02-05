@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<div id = "app">{{message}}</div>
+
+  <script>
+      console.log(Vue);
+      const {createApp, ref} = Vue;
+
+/*  옛날 방식
+    createApp({
+          setup : function (){}
+      });
+      */
+
+      createApp({
+          setup(){ // 셋업이 실행되면 메서드 반환 -> 앱에 반환된게 설치됨
+              const message = ref("Hello Vue");
+              return { message }; // {"message" : message}
+          }
+      }).mount('#app');
+
+  </script>
+</body>
+</html>

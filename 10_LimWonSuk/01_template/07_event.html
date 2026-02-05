@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <div id="step1"></div>
+  <hr>
+
+  <div id="step2">
+    <div>num is {{ num }}</div>
+    <button @click="plus">알림</button>
+    <button @click="clear">리셋</button>
+  </div>
+  <hr>
+  <div id="step3">
+    <h3>keyup 이벤트</h3>
+    <input type="text" @keyup="handlerKeyup($event)">
+    <br>
+    <!-- 이벤트 수식어
+    - .enter, .stop, .prevent, .once 등. 존재
+    - 특징 이벤트에 대한 부가적인 조건, 효과를 추가할 수 있음
+    -->
+    <input type="text" @keyup.enter="handlerEnterKey">
+  </div>
+  <hr>
+  <div id="step4">
+    <h4>prevent : 기본 브라우저 이벤트 막기</h4>
+    <a href="https://www.naver.com"
+       target="_blank" @click.prevent="preventFn">네이버로 가라</a>
+    <h4>이벤트 전파 방지(버블링)</h4>
+    <div @click="bubblingFn">
+      <button @click.stop="bubblingStopFn"> 버블버릅ㄹ</button>
+    </div>
+
+    <h4>하위 요소 이벤 억제 [.self]</h4>
+    <div>
+      <button @click.self="selfTest">
+        <!-- 하위요소는 반응안함-->
+        self <span>other</span>
+      </button>
+    </div>
+
+    <h4>이벤트를 한 번만 동작(1회용 이벤트) [.once]</h4>
+    <div>
+      <button @click.once="onceTest">
+        한번만 동작하는 버튼
+      </button>
+    </div>
+
+    <h4>이벤 한번 동작 [.once]</h4>
+
+  </div>
+
+
+  <script>
+      const {createApp, ref} = Vue;
+
+      createApp({
+          name: "v-on, template 속성 test app",
+          setup() {
+              const count = ref(0);
+              return {count}
+          },
+          template: `
+            <div>count is {{ count }}</div>
+            <button @click="count++"> count++</button>
+          `
+          /* 클릭 하면 -> 카운트에 1+ -> ref(0) -> 화면에 숫자 증가*/
+      }).mount("#step1");
+
+      /* 알림 버튼이 클릭이 될 때 마다 num을 1씩 증가
+      * num이 10의 배수가 될 때 마다 alert를 이용해서 num값을 출력
+      * */
+
+      /* 버튼 눌렀을 때 숫자 0으로 만들고 알람창 띄우기 */
+      /* createApp({
+           name : "v-on, template 속성 test app 2",
+           setup(){
+               const num = ref(0);
+               const plus = () => {
+                   num.value++;
+                   if (num.value%10 === 0){
+                       alert(num.value);
+                   }
+               }
+
+               return {num,plus};
+           }
+
+       }).mount("#step2");*/
+
+      /* 버튼 눌렀을 때 숫자 0으로 만들고 알람창 띄우기 */
+      createApp({
+          name: "v-on, template 속성 test app 2",
+          setup() {
+              const num = ref(0);
+              const plus = () => {
+                  num.value++;
+                  if (num.value % 10 === 0) {
+                      alert(num.value);
+                  }
+              }
+              const clear = () => {
+                  num.value = 0;
+                  alert("초기화 되었습니다");
+              }
+              return {num, plus, clear};
+          }
+
+      }).mount("#step2");
+
+      /* keyup event */
+      createApp({
+          name: " 키업테스트 앱",
+          setup() {
+              const handlerKeyup = (event) => {
+                  console.log("event: ", event);
+
+                  if (event.key === "Enter") {
+                      alert("엔터눌름")
+                  }
+              }
+              const handlerEnterKey = () => alert(" 노 엔 터")
+              return {handlerKeyup, handlerEnterKey};
+          }
+      }).mount("#step3")
+
+      createApp({
+          name : "event test app",
+          setup(){
+             ;
+               const bubblingFn = () =>  console.log("ㄴㄴss");
+              const bubblingStopFn = () =>  console.log("멈춰");
+
+              const selfTest = () => console.log("오직 나만 !!!");
+              const onceTest = () => console.log("오직 한번 !!!");
+
+              return {preventFn, bubblingFn, bubblingStopFn, selfTest, onceTest}
+          }
+      }).mount("#step4")
+
+
+
+
+  </script>
+</body>
+</html>
