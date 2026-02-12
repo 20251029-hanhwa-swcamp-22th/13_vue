@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>watch effect</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <pre>
+    # watchEffect
+      - child 내부의 상태 변수들의 동시변화를 감지할 때 사용
+      - 별도로 감시할 반응형 변수를 지정하지 않고 모든 반응형 변수를 감지하는 함수
+  </pre>
+  <div id="app">
+    <h1>{{num}}</h1>
+
+    <button @click="unit--">-</button>
+    <input type="number" min="1" max="10" v-model.lazy="unit">
+    <button @click="unit++">+</button>
+    <br>
+
+    <button @click="num-=unit">-{{unit}}</button>
+    <button @click="num = 0">초기화</button>
+    <button @click="num+=unit">{{unit}}</button>
+  </div>
+
+  <script>
+    const {createApp, ref, watchEffect, watch, computed} = Vue;
+
+    createApp({
+      setup() {
+        const num = ref(0);
+        const unit = ref(1);
+        watchEffect(() => {
+          console.log("num : ", num.value);
+        });
+        watch(unit, (nv, ov) => {
+          if (nv < 1) {
+            alert("1보다 작아질 수 없습니다!");
+            unit.value = 1;
+          }
+          if (nv > 10) {
+            alert("10보다 커질 수 없습니다!");
+            unit.value = 10;
+          }
+          unit.value=Math.floor(unit.value)
+        })
+
+
+        return {num, unit};
+      }
+    }).mount("#app");
+  </script>
+</body>
+</html>

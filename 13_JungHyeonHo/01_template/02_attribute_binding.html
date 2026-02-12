@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <!--
+    - Vue 객체 : Vue application의 중앙 관리자. 필요한 프로퍼티, 함수를 제공
+
+    - createApp() : vue instance를 생성하는 메서드
+
+    - mount() : 생성된 vue instance를 DOM 요소와 연결해서 지정된 요소에 vue instance 값을 렌더링하는 메서드
+
+    - {{}} : vue instance의 setup에서 반환된 값을 text 형태로 출력
+
+    - v-bind : 요소의 속성을 동적으로 바인딩하는 디렉티브(지시자)
+
+    - ref() : 반응형 변수(=상태 변수), 상태가 변할 수 있으니 계속 참조해라
+                단일 값 또는 객체를 반응형(상태) 변수로 만드는 메서드
+                ⇒ 변경되면 View Model이 반응하면 View를 변경
+
+    - reactive() :
+  -->
+  <div id="step1">
+    <div>{{staticValue}}</div>
+    <!-- 속성 바인딩 : v-bind:속성 또는 :속성 -->
+    <div v-bind:id="dynamicId">{{dynamicValue}}</div>
+
+    <div :id="skipId" v-text="skipValue">skipValue들어갈 자리</div>
+  </div>
+
+  <hr>
+
+  <!-- 여기서는 #step1에 mount한 객체들을 사용하지 못함-->
+  <div id="step2">
+  <!-- v-on 디렉티브 : 이벤트 핸들러를 연결하는 디렉티브
+      (이벤트 리스너 등록)
+   -->
+    <button v-on:click="activation">클릭</button>
+
+    <!-- template영역에서는 ref(), reactive() 모두 .value 사용 X -->
+    <button @click="activation">{{isTrue}}</button>
+  </div>
+
+  <script>
+    const {createApp, ref, reactive} = Vue; /* 구조분해 할당 구문으로, 원하는 프로퍼티를 가져온다. */
+    createApp({
+      name : "v-bind test app",
+
+      /* setup() : composition api의 진입점
+      *            생성되는 컴포넌트에 대한 설정을 하는 메서드
+      * */
+      setup(){
+        const staticValue = "정적 값 입니다.";
+
+        // 반응형 변수 (또는 상태 변수) 선언, 변경 가능
+        const dynamicValue = ref("동적 값 입니다.");
+        const dynamicId = ref('vue');
+        const skipId = ref('skip');
+        const skipValue = ref('skip 값 입니다.');
+
+        // setup() 메서드의 반환 객체의 프로퍼티는
+        // mount(붙이다)된 요소에서 호출 사용 가능
+        return {staticValue, dynamicValue, dynamicId, skipId, skipValue};
+      }
+    }).mount("#step1"); // 생성된 vue instance를 요소에 붙임
+
+    /* #step2용 vue instance 새로 생성 */
+    createApp({
+      name : "reactive, v-on test app",
+    /*ref vs reactive
+    1. ref는 모든 자료형에 사용 가능하며
+       reactive는 객체 자료형에만 사용 가능
+    2. ref는 setup함수 내에서 접근할 떄 .value를 사용하며
+       reactive는 사용하지 않는다.
+
+    단, template영역에서는 둘 다 .value를 사용하지 않는다.*/
+      setup(){
+        const isTrue = ref(false);
+        const reactiveObj = reactive({ test:'reactive test' });
+
+        const activation = () => {
+          console.log('isTrue : ',isTrue);
+          console.log('isTrue.value : ',isTrue.value);
+
+          console.log('reactiveObj : ',reactiveObj);
+          console.log('reactiveObj.test : ',reactiveObj.test);
+
+          // isTrue의 값을 true <-> false 교차하며 변경
+          // => VM이 실시간으로 보고 있으므로 위의 버튼 텍스트가 실시간으로 바뀜
+          isTrue.value = !isTrue.value;
+        };
+
+        return {isTrue,reactiveObj,activation};
+      }
+    }).mount("#step2");
+  </script>
+
+
+</body>
+</html>
